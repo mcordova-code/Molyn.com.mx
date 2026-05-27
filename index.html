@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molyn – Animación & 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f1a;
+  --bg2:#131627;
+  --bg3:#1a1d30;
+  --purple:#7c4dff;
+  --purple2:#9c6fff;
+  --purple3:#b388ff;
+  --pink:#e040fb;
+  --orange:#ff9800;
+  --green:#00e676;
+  --teal:#00bcd4;
+  --white:#ffffff;
+  --gray:#a0a3b1;
+  --card:#1e2235;
+  --card2:#252840;
+  --radius:16px;
+  --font:'Nunito',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--font);overflow-x:hidden;line-height:1.6}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 4rem;background:rgba(13,15,26,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(124,77,255,0.15)}
+.nav-logo{font-size:1.5rem;font-weight:900;color:var(--white);text-decoration:none;letter-spacing:2px}
+.nav-logo span{color:var(--purple)}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{color:var(--gray);text-decoration:none;font-size:0.9rem;font-weight:600;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-btn{background:var(--purple);color:var(--white)!important;padding:0.5rem 1.5rem;border-radius:50px;font-weight:700!important;transition:background 0.2s,transform 0.15s!important}
+.nav-btn:hover{background:var(--purple2)!important;transform:translateY(-1px)}
+
+/* HERO */
+.hero{min-height:100vh;padding:8rem 4rem 4rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(124,77,255,0.12) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 10% 80%,rgba(224,64,251,0.06) 0%,transparent 50%)}
+.hero-eyebrow{font-size:0.75rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-bottom:1.25rem}
+.hero-title{font-size:clamp(2.8rem,5vw,4.2rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;color:var(--white)}
+.hero-title .accent{color:var(--purple2)}
+.hero-subtitle{font-size:1rem;color:var(--gray);line-height:1.8;margin-bottom:2rem;max-width:480px}
+.btn-primary{display:inline-block;background:var(--purple);color:var(--white);padding:0.85rem 2rem;border-radius:50px;font-weight:700;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:background 0.2s,transform 0.15s;border:none;cursor:pointer}
+.btn-primary:hover{background:var(--purple2);transform:translateY(-2px)}
+.btn-outline{display:inline-block;background:transparent;color:var(--white);padding:0.85rem 2rem;border-radius:50px;font-weight:700;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border:2px solid rgba(255,255,255,0.2);transition:border-color 0.2s,transform 0.15s;margin-left:1rem}
+.btn-outline:hover{border-color:var(--purple2);transform:translateY(-2px)}
+
+/* Hero visual */
+.hero-visual{position:relative;height:520px}
+.float-card{position:absolute;background:var(--card);border-radius:var(--radius);padding:1.25rem 1.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.float-card-prompt{top:0;left:0;width:220px;font-size:0.85rem;color:var(--gray);line-height:1.5;border:1px solid rgba(124,77,255,0.2)}
+.float-card-prompt span{color:var(--white);font-style:italic}
+.float-card-main{top:80px;right:0;left:60px;background:rgba(124,77,255,0.2);border:1px solid rgba(124,77,255,0.4);padding:0;overflow:hidden;border-radius:var(--radius)}
+.float-card-main img{width:100%;height:200px;object-fit:cover;display:block}
+.float-card-main-body{padding:1.25rem}
+.float-card-main-body h4{font-size:1.1rem;font-weight:800;margin-bottom:0.4rem}
+.float-card-main-body p{font-size:0.8rem;color:var(--gray)}
+.float-card-ai{bottom:20px;right:0;width:200px;background:var(--card2);border:1px solid rgba(255,255,255,0.06);font-size:0.8rem;color:var(--gray);font-style:italic;line-height:1.6}
+.float-card-ai span{color:var(--white)}
+
+/* Curly SVG decorations */
+.curl-purple{position:absolute;top:10%;right:5%;opacity:0.7}
+.curl-left{position:absolute;bottom:20%;left:-20px;opacity:0.5}
+
+/* MARQUEE */
+.marquee-wrap{background:var(--purple);padding:1rem 0;overflow:hidden}
+.marquee-inner{display:flex;gap:2rem;animation:marquee 22s linear infinite;width:max-content;white-space:nowrap}
+.marquee-item{font-size:0.85rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:1.5rem}
+.marquee-sep{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.5)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS shared */
+section{padding:6rem 4rem;position:relative}
+.section-label{font-size:0.7rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--purple2);margin-bottom:1rem}
+.section-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.1;margin-bottom:1rem}
+.section-sub{font-size:1rem;color:var(--gray);max-width:560px;margin:0 auto 3.5rem;line-height:1.8}
+.center{text-align:center}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-photos{display:grid;grid-template-columns:1fr 1fr;gap:1rem;position:relative}
+.about-photos img{width:100%;border-radius:var(--radius);object-fit:cover;aspect-ratio:1}
+.about-badge{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);background:var(--card2);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center;min-width:180px;border:1px solid rgba(124,77,255,0.25);white-space:nowrap}
+.about-badge .big{font-size:1.5rem;font-weight:900;color:var(--purple2)}
+.about-badge .label{font-size:0.75rem;color:var(--gray)}
+.about-stat{font-size:clamp(3rem,6vw,5rem);font-weight:900;color:var(--purple2);line-height:1}
+.about-stat-label{font-size:1rem;color:var(--gray);margin-bottom:1.5rem}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:0.75rem;margin-top:1.5rem}
+.check-list li{display:flex;align-items:center;gap:0.75rem;font-size:0.95rem;color:var(--gray)}
+.check-list li::before{content:'✓';color:var(--green);font-weight:900;font-size:1rem}
+
+/* FEATURES GRID */
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:3rem}
+.feature-card{text-align:left}
+.feature-icon{width:48px;height:48px;margin-bottom:1.25rem}
+.feature-icon svg{width:48px;height:48px}
+.feature-title{font-size:1rem;font-weight:800;margin-bottom:0.6rem}
+.feature-desc{font-size:0.85rem;color:var(--gray);line-height:1.7}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.service-card{background:var(--card);border-radius:var(--radius);padding:2rem;border:1px solid rgba(255,255,255,0.05);transition:border-color 0.3s,transform 0.2s;position:relative;overflow:hidden}
+.service-card:hover{border-color:rgba(124,77,255,0.4);transform:translateY(-4px)}
+.service-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--pink));transform:scaleX(0);transition:transform 0.3s;transform-origin:left}
+.service-card:hover::before{transform:scaleX(1)}
+.service-num{font-size:0.7rem;font-weight:700;letter-spacing:3px;color:var(--purple2);margin-bottom:1rem;text-transform:uppercase}
+.service-emoji{font-size:2rem;margin-bottom:1rem;display:block}
+.service-title{font-size:1.3rem;font-weight:800;margin-bottom:0.6rem}
+.service-desc{font-size:0.875rem;color:var(--gray);line-height:1.7}
+
+/* PROCESS */
+.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.process-visual{background:var(--card);border-radius:24px;padding:3rem;display:flex;align-items:center;justify-content:center;position:relative;min-height:400px;border:1px solid rgba(124,77,255,0.2);overflow:hidden}
+.process-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(124,77,255,0.1) 0%,transparent 70%)}
+.process-logo{font-size:3.5rem;font-weight:900;letter-spacing:4px;position:relative;z-index:1}
+.process-logo span{color:var(--purple2)}
+.orbit-ring{position:absolute;border-radius:50%;border:1px solid rgba(124,77,255,0.2);animation:spin 10s linear infinite}
+.orbit-ring:nth-child(2){width:200px;height:200px}
+.orbit-ring:nth-child(3){width:280px;height:280px;animation-duration:16s;animation-direction:reverse;border-color:rgba(224,64,251,0.15)}
+.orbit-ring:nth-child(4){width:360px;height:360px;animation-duration:24s;border-color:rgba(124,77,255,0.08)}
+.orbit-dot{position:absolute;top:-5px;left:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:var(--purple)}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:1.5rem;padding:1.75rem 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.step:first-child{border-top:1px solid rgba(255,255,255,0.06)}
+.step-num{font-size:0.75rem;font-weight:700;color:var(--purple2);min-width:2rem;padding-top:3px;letter-spacing:1px}
+.step h3{font-size:1rem;font-weight:800;margin-bottom:0.35rem}
+.step p{font-size:0.85rem;color:var(--gray);line-height:1.7}
+
+/* STAT */
+.stat-section{background:var(--bg2);padding:5rem 4rem;text-align:center}
+.stat-number{font-size:clamp(5rem,12vw,9rem);font-weight:900;color:var(--purple2);line-height:1}
+.stat-label{font-size:1.1rem;color:var(--gray);max-width:600px;margin:1rem auto 0}
+
+/* VIDEO */
+.video-section{padding:4rem 4rem 6rem;text-align:center}
+.video-box{background:var(--card);border-radius:24px;overflow:hidden;max-width:900px;margin:0 auto;position:relative;border:1px solid rgba(255,255,255,0.06);cursor:pointer}
+.video-box img{width:100%;display:block;opacity:0.7}
+.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.play-btn svg{width:28px;height:28px;fill:white;margin-left:4px}
+.video-box:hover .play-btn{background:rgba(124,77,255,0.5)}
+
+/* CONTACT */
+.contact-section{background:var(--bg2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.contact-form{display:flex;flex-direction:column;gap:1rem}
+.form-group input,.form-group textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:1rem 1.25rem;color:var(--white);font-family:var(--font);font-size:0.9rem;outline:none;transition:border-color 0.2s}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--gray)}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--purple)}
+.form-group textarea{min-height:140px;resize:vertical}
+.form-submit{align-self:flex-end;background:var(--orange);color:var(--white);padding:0.85rem 2.5rem;border-radius:50px;font-weight:700;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:background 0.2s,transform 0.15s}
+.form-submit:hover{background:#f57c00;transform:translateY(-1px)}
+.contact-cards{display:flex;flex-direction:column;gap:1.25rem;margin-top:3rem}
+.contact-card{background:var(--card);border-radius:var(--radius);padding:1.5rem;border:1px solid rgba(255,255,255,0.06);display:flex;gap:1rem;align-items:flex-start}
+.contact-card-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.icon-pink{background:rgba(224,64,251,0.15)}
+.icon-orange{background:rgba(255,152,0,0.15)}
+.icon-purple{background:rgba(124,77,255,0.15)}
+.contact-card h4{font-size:0.95rem;font-weight:800;margin-bottom:0.25rem}
+.contact-card p{font-size:0.8rem;color:var(--gray);line-height:1.6}
+
+/* CTA */
+.cta-section{background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%);text-align:center;padding:6rem 4rem;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(124,77,255,0.08) 0%,transparent 60%)}
+.cta-title{font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:1.25rem;position:relative;z-index:1}
+.cta-title span{color:var(--purple2)}
+.cta-sub{font-size:1rem;color:var(--gray);margin-bottom:2.5rem;position:relative;z-index:1}
+.cta-btns{display:flex;gap:1rem;justify-content:center;position:relative;z-index:1}
+
+/* FOOTER */
+footer{background:var(--bg);padding:4rem;border-top:1px solid rgba(255,255,255,0.06)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:3rem;margin-bottom:3rem}
+.footer-brand{font-size:1.5rem;font-weight:900;letter-spacing:2px;margin-bottom:1rem;display:block;text-decoration:none;color:var(--white)}
+.footer-brand span{color:var(--purple)}
+.footer-desc{font-size:0.85rem;color:var(--gray);line-height:1.7;margin-bottom:1.5rem}
+.footer-social{display:flex;gap:0.75rem}
+.social-btn{width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:var(--gray);text-decoration:none;font-size:0.75rem;font-weight:700;transition:background 0.2s,color 0.2s}
+.social-btn:hover{background:var(--purple);color:var(--white)}
+.footer-col h4{font-size:0.85rem;font-weight:800;margin-bottom:1.25rem;color:var(--white)}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+.footer-col ul a{font-size:0.85rem;color:var(--gray);text-decoration:none;transition:color 0.2s}
+.footer-col ul a:hover{color:var(--white)}
+.footer-newsletter input{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:50px;padding:0.75rem 1.25rem;color:var(--white);font-family:var(--font);font-size:0.85rem;outline:none;margin-bottom:0.75rem}
+.footer-newsletter input::placeholder{color:var(--gray)}
+.footer-newsletter button{width:100%;background:var(--purple);color:var(--white);padding:0.75rem;border-radius:50px;font-weight:700;font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:background 0.2s}
+.footer-newsletter button:hover{background:var(--purple2)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:2rem;display:flex;justify-content:space-between;align-items:center}
+.footer-bottom p{font-size:0.8rem;color:var(--gray)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-content > *{animation:fadeUp 0.6s ease both}
+.hero-content > *:nth-child(1){animation-delay:0.1s}
+.hero-content > *:nth-child(2){animation-delay:0.2s}
+.hero-content > *:nth-child(3){animation-delay:0.3s}
+.hero-content > *:nth-child(4){animation-delay:0.4s}
+.hero-visual{animation:fadeUp 0.8s ease 0.3s both}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .hero,.about-grid,.process-grid,.contact-grid,.footer-grid{grid-template-columns:1fr}
+  section{padding:4rem 1.5rem}
+  .hero{padding:6rem 1.5rem 3rem}
+  .hero-visual{height:300px;margin-top:2rem}
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .services-grid{grid-template-columns:1fr}
+  .cta-btns{flex-direction:column;align-items:center}
+  footer{padding:3rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">MOL<span>Y</span>N</a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="#contacto" class="nav-btn">Hablemos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding-top:7rem">
+  <div class="hero-bg"></div>
+
+  <!-- Curly decorations -->
+  <svg class="curl-purple" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 100 C 30 80, 50 20, 70 50 C 90 80, 100 30, 115 20" stroke="#7c4dff" stroke-width="4" stroke-linecap="round" fill="none"/>
+  </svg>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Unleashing Creative Potential</p>
+    <h1 class="hero-title">Tu marca necesita<br><span class="accent">movimiento.</span><br>Necesita impacto.</h1>
+    <p class="hero-subtitle">Nos convertimos en tu departamento externo de animación y 3D. Aliados estratégicos para empresas y agencias que quieren elevar el nivel sin inflar su estructura interna.</p>
+    <div>
+      <a href="#contacto" class="btn-primary">Empezar proyecto</a>
+      <a href="#servicios" class="btn-outline">Ver servicios</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="float-card float-card-prompt">
+      <span>"Motion graphics que venden ideas complejas en mensajes claros"</span>
+    </div>
+    <div class="float-card float-card-main">
+      <div style="width:100%;height:180px;background:linear-gradient(135deg,#1a1d30,#7c4dff44);display:flex;align-items:center;justify-content:center">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="36" stroke="#7c4dff" stroke-width="2" opacity="0.5"/>
+          <polygon points="32,25 60,40 32,55" fill="#7c4dff"/>
+        </svg>
+      </div>
+      <div class="float-card-main-body">
+        <h4>Animación 2D & 3D</h4>
+        <p>Mundos visuales que elevan tu marca al siguiente nivel.</p>
+      </div>
+    </div>
+    <div class="float-card float-card-ai">
+      <span>"Realidad virtual y aumentada para experiencias que nadie olvida"</span>
+    </div>
+
+    <!-- Green curl -->
+    <svg style="position:absolute;left:10px;bottom:80px;opacity:0.5" width="80" height="120" viewBox="0 0 80 120" fill="none">
+      <path d="M70 5 C 40 30, 10 50, 40 80 C 70 110, 20 115, 10 115" stroke="#7c4dff" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span class="marquee-item">Motion Graphics <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Animación 2D <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Animación 3D <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Realidad Virtual <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Realidad Aumentada <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Visuales que Venden <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Motion Graphics <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Animación 2D <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Animación 3D <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Realidad Virtual <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Realidad Aumentada <span class="marquee-sep"></span></span>
+    <span class="marquee-item">Visuales que Venden <span class="marquee-sep"></span></span>
+  </div>
+</div>
+
+<!-- STAT -->
+<div class="stat-section">
+  <p style="font-size:1.1rem;color:var(--gray);max-width:700px;margin:0 auto 2rem;text-align:center;line-height:1.8">
+    Convertimos ideas complejas en mensajes claros y poderosos. Nuestros visuales no solo se ven bien — <strong style="color:var(--white)">generan resultados reales</strong> para marcas y agencias.
+  </p>
+  <div class="stat-number">+80</div>
+  <p class="stat-label">Proyectos entregados a marcas y agencias en toda la región</p>
+</div>
+
+<!-- ABOUT -->
+<section id="nosotros">
+  <div class="about-grid">
+    <div style="position:relative;padding-bottom:2.5rem">
+      <div class="about-photos">
+        <div style="background:linear-gradient(135deg,#1a1d30,#7c4dff33);border-radius:var(--radius);aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:3rem">🎬</div>
+        <div style="background:linear-gradient(135deg,#1a1d30,#e040fb33);border-radius:var(--radius);aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:3rem">🧠</div>
+        <div style="background:linear-gradient(135deg,#1a1d30,#00bcd433);border-radius:var(--radius);aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:3rem">🕶️</div>
+        <div style="background:linear-gradient(135deg,#1a1d30,#ff980033);border-radius:var(--radius);aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:3rem">🚀</div>
+      </div>
+      <div class="about-badge">
+        <div class="big">5+ años</div>
+        <div class="label">creando impacto visual</div>
+      </div>
+      <!-- Curl decoration -->
+      <svg style="position:absolute;left:-30px;bottom:60px;opacity:0.4" width="70" height="110" viewBox="0 0 70 110" fill="none">
+        <path d="M60 5 C 30 25, 5 45, 35 75 C 65 100, 15 105, 5 105" stroke="#00e676" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+
+    <div>
+      <p class="section-label">Sobre Molyn</p>
+      <div class="about-stat">100%</div>
+      <p class="about-stat-label">Comprometidos con tu proyecto</p>
+      <h2 style="font-size:1.75rem;font-weight:900;margin-bottom:1rem;line-height:1.2">Tu departamento externo de animación y 3D</h2>
+      <p style="font-size:0.9rem;color:var(--gray);line-height:1.8;margin-bottom:0.75rem">Trabajamos como aliados estratégicos de empresas y agencias que quieren elevar el nivel de sus proyectos sin inflar su estructura interna.</p>
+      <p style="font-size:0.9rem;color:var(--gray);line-height:1.8">No somos solo un proveedor — somos el equipo creativo que tu marca necesitaba.</p>
+      <ul class="check-list">
+        <li>Flujo de trabajo ágil y colaborativo</li>
+        <li>Dirección creativa estratégica</li>
+        <li>Automatización visual que ahorra tiempo</li>
+      </ul>
+      <a href="#contacto" class="btn-primary" style="margin-top:2rem;display:inline-block">Conoce más</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES (icon grid) -->
+<section style="background:var(--bg2)" id="servicios">
+  <h2 class="section-title center">Servicios que <span style="color:var(--purple2)">venden ideas</span></h2>
+  <p class="section-sub center">Todo lo que necesitas para que tu marca se mueva, emocione y convierta — en un solo aliado.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(124,77,255,0.15)"/>
+          <path d="M18 16L34 24L18 32V16Z" stroke="#7c4dff" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Motion Graphics</h3>
+      <p class="feature-desc">Visuales animados que comunican tu mensaje con claridad y potencia. Ideales para redes, presentaciones y campañas.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(224,64,251,0.15)"/>
+          <path d="M12 36L24 12L36 36" stroke="#e040fb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 28H32" stroke="#e040fb" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Animación 2D</h3>
+      <p class="feature-desc">Personajes, narrativas y universos visuales en 2D que conectan emocionalmente con tu audiencia.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(0,188,212,0.15)"/>
+          <path d="M24 12L36 20V32L24 40L12 32V20L24 12Z" stroke="#00bcd4" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M24 12V40M12 20L36 32M36 20L12 32" stroke="#00bcd4" stroke-width="1.5" opacity="0.5"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Animación 3D</h3>
+      <p class="feature-desc">Mundos tridimensionales y productos visualizados con precisión técnica y visión artística de alto nivel.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(255,152,0,0.15)"/>
+          <rect x="10" y="18" width="28" height="18" rx="4" stroke="#ff9800" stroke-width="2"/>
+          <path d="M16 18V14C16 11.8 17.8 10 20 10H28C30.2 10 32 11.8 32 14V18" stroke="#ff9800" stroke-width="2"/>
+          <circle cx="24" cy="27" r="3" stroke="#ff9800" stroke-width="2"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Realidad Virtual (VR)</h3>
+      <p class="feature-desc">Experiencias inmersivas que llevan tu marca a un nivel de interacción que nadie olvida.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(0,230,118,0.12)"/>
+          <circle cx="24" cy="24" r="8" stroke="#00e676" stroke-width="2"/>
+          <path d="M24 8V12M24 36V40M8 24H12M36 24H40" stroke="#00e676" stroke-width="2" stroke-linecap="round"/>
+          <path d="M14 14L17 17M31 31L34 34M14 34L17 31M31 17L34 14" stroke="#00e676" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Realidad Aumentada (AR)</h3>
+      <p class="feature-desc">Integramos elementos digitales en el mundo físico para campañas y experiencias de marca únicas.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(124,77,255,0.15)"/>
+          <path d="M12 24H36M24 12V36" stroke="#7c4dff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="24" cy="24" r="12" stroke="#7c4dff" stroke-width="2" opacity="0.4"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Estrategia Visual</h3>
+      <p class="feature-desc">Traducimos conceptos complejos en mensajes poderosos y memorables alineados a tus objetivos de negocio.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(224,64,251,0.15)"/>
+          <rect x="10" y="14" width="28" height="20" rx="4" stroke="#e040fb" stroke-width="2"/>
+          <path d="M18 22H30M18 27H26" stroke="#e040fb" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Contenido para Redes</h3>
+      <p class="feature-desc">Piezas animadas optimizadas para cada plataforma: Instagram, TikTok, YouTube, LinkedIn y más.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="rgba(0,188,212,0.15)"/>
+          <path d="M14 34L24 14L34 34" stroke="#00bcd4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18 27H30" stroke="#00bcd4" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="24" cy="38" r="2" fill="#00bcd4"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Alianza Estratégica</h3>
+      <p class="feature-desc">Nos integramos a tu equipo o agencia como departamento externo. Sin costos fijos, con resultados de alto nivel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO PLACEHOLDER -->
+<section class="video-section" id="showreel">
+  <p class="section-label" style="display:block;text-align:center;margin-bottom:0.75rem">Showreel</p>
+  <h2 class="section-title center" style="margin-bottom:0.75rem">Mira cómo <span style="color:var(--purple2)">el movimiento</span> transforma marcas</h2>
+  <p style="color:var(--gray);margin-bottom:2.5rem;font-size:0.95rem">Nuestros proyectos hablan por sí solos.</p>
+  <div class="video-box">
+    <div style="width:100%;height:420px;background:linear-gradient(135deg,#131627 0%,#1e2235 40%,#252840 100%);display:flex;align-items:center;justify-content:center;position:relative">
+      <!-- Decorative mock device -->
+      <div style="width:300px;height:220px;background:#252840;border-radius:16px;border:1px solid rgba(255,255,255,0.08);transform:rotate(-4deg);position:absolute;left:12%;top:15%;opacity:0.7"></div>
+      <div style="width:180px;height:180px;background:#1a1d30;border-radius:16px;border:1px solid rgba(255,255,255,0.08);transform:rotate(3deg);position:absolute;right:10%;bottom:10%;opacity:0.6"></div>
+    </div>
+    <div class="play-btn">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section style="background:var(--bg2)" id="proceso">
+  <div class="process-grid">
+    <div>
+      <p class="section-label">Cómo trabajamos</p>
+      <h2 class="section-title" style="margin-bottom:2.5rem">El proceso <span style="color:var(--purple2)">Molyn</span></h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <div>
+            <h3>Diagnóstico</h3>
+            <p>Entendemos tu marca, tu audiencia y el mensaje que necesitas comunicar antes de crear cualquier visual.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <div>
+            <h3>Estrategia y concepto</h3>
+            <p>Desarrollamos la dirección creativa que conecta con tu objetivo de negocio, no solo con la estética.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <div>
+            <h3>Producción</h3>
+            <p>Animación, 3D y efectos ejecutados con precisión técnica y visión artística de alto nivel.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">04</span>
+          <div>
+            <h3>Entrega y alianza</h3>
+            <p>No es un proyecto cerrado — es el inicio de una relación estratégica a largo plazo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="process-visual">
+      <div class="orbit-ring"><div class="orbit-dot"></div></div>
+      <div class="orbit-ring"><div class="orbit-dot" style="background:var(--pink)"></div></div>
+      <div class="orbit-ring"></div>
+      <div class="process-logo">MOL<span>Y</span>N</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contacto">
+  <div class="contact-grid">
+    <div>
+      <p class="section-label">Contacto</p>
+      <h2 class="section-title" style="margin-bottom:0.75rem">Get In <span style="color:var(--orange)">Touch</span></h2>
+      <p style="font-size:0.9rem;color:var(--gray);margin-bottom:2rem;line-height:1.7">¿Listo para elevar el nivel de tu marca? Cuéntanos tu proyecto y te respondemos en menos de 24 horas.</p>
+
+      <!-- Curl orange -->
+      <svg style="position:absolute;right:4rem;top:3rem;opacity:0.5" width="80" height="110" viewBox="0 0 80 110" fill="none">
+        <path d="M70 5 C 40 30, 10 50, 40 80 C 70 110, 20 105, 10 105" stroke="#ff9800" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      </svg>
+
+      <div class="contact-form">
+        <div class="form-group"><input type="text" placeholder="Nombre"></div>
+        <div class="form-group"><input type="email" placeholder="Correo electrónico"></div>
+        <div class="form-group"><textarea placeholder="Cuéntanos tu proyecto..."></textarea></div>
+        <button class="form-submit">Enviar mensaje</button>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:2rem;margin-top:4rem">Nuestros servicios</p>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="contact-card-icon icon-pink">🎬</div>
+          <div>
+            <h4>Motion Graphics</h4>
+            <p>Visuales en movimiento que comunican con claridad y potencia.</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon icon-orange">🧠</div>
+          <div>
+            <h4>Animación 2D & 3D</h4>
+            <p>Personajes y mundos que dan vida a tu historia de marca.</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon icon-purple">🕶️</div>
+          <div>
+            <h4>Experiencias VR & AR</h4>
+            <p>Inmersión total para tu audiencia en entornos virtuales y físicos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">¿Listo para que tu marca<br><span>se mueva diferente?</span></h2>
+  <p class="cta-sub">Hablemos de tu próximo proyecto. Sin compromisos.</p>
+  <div class="cta-btns">
+    <a href="#contacto" class="btn-primary">Empezar ahora</a>
+    <a href="#showreel" class="btn-outline">Ver showreel</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a href="#" class="footer-brand">MOL<span>Y</span>N</a>
+      <p class="footer-desc">Tu departamento externo de animación y 3D. Motion graphics, animación 2D/3D y experiencias VR/AR para marcas y agencias.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">in</a>
+        <a href="#" class="social-btn">ig</a>
+        <a href="#" class="social-btn">yt</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Links rápidos</h4>
+      <ul>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#proceso">Proceso</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#">Motion Graphics</a></li>
+        <li><a href="#">Animación 2D</a></li>
+        <li><a href="#">Animación 3D</a></li>
+        <li><a href="#">VR & AR</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Novedades</h4>
+      <div class="footer-newsletter">
+        <input type="email" placeholder="Email">
+        <button>Suscribirse</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Molyn Studio. Todos los derechos reservados.</p>
+    <p>Diseñado con impacto visual.</p>
+  </div>
+</footer>
+
+</body>
+</html>
