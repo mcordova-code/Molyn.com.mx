@@ -1,0 +1,86 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "configuracion"
+    label: "Configuración del sitio"
+    files:
+      - label: "Contenido principal"
+        name: "main"
+        file: "_data/content.json"
+        fields:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Eyebrow (texto pequeño arriba)", name: "eyebrow", widget: "string"}
+              - {label: "Título línea 1", name: "titulo1", widget: "string"}
+              - {label: "Título línea 2 (acento)", name: "titulo2", widget: "string"}
+              - {label: "Título línea 3", name: "titulo3", widget: "string"}
+              - {label: "Subtítulo", name: "subtitulo", widget: "text"}
+              - {label: "Texto botón principal", name: "btn1", widget: "string"}
+              - {label: "Texto botón secundario", name: "btn2", widget: "string"}
+
+          - label: "Estadística principal"
+            name: "stat"
+            widget: "object"
+            fields:
+              - {label: "Número grande", name: "numero", widget: "string"}
+              - {label: "Descripción", name: "descripcion", widget: "string"}
+              - {label: "Texto introductorio", name: "intro", widget: "text"}
+
+          - label: "Sección Nosotros"
+            name: "nosotros"
+            widget: "object"
+            fields:
+              - {label: "Estadística (ej: 100%)", name: "stat", widget: "string"}
+              - {label: "Label de estadística", name: "stat_label", widget: "string"}
+              - {label: "Título", name: "titulo", widget: "string"}
+              - {label: "Párrafo 1", name: "parrafo1", widget: "text"}
+              - {label: "Párrafo 2", name: "parrafo2", widget: "text"}
+
+          - label: "Servicios"
+            name: "servicios"
+            widget: "list"
+            max: 8
+            fields:
+              - {label: "Emoji/Icono", name: "emoji", widget: "string"}
+              - {label: "Título", name: "titulo", widget: "string"}
+              - {label: "Descripción", name: "descripcion", widget: "text"}
+
+          - label: "Proceso (pasos)"
+            name: "proceso"
+            widget: "list"
+            max: 4
+            fields:
+              - {label: "Número (ej: 01)", name: "numero", widget: "string"}
+              - {label: "Título del paso", name: "titulo", widget: "string"}
+              - {label: "Descripción", name: "descripcion", widget: "text"}
+
+          - label: "Contacto"
+            name: "contacto"
+            widget: "object"
+            fields:
+              - {label: "Título", name: "titulo", widget: "string"}
+              - {label: "Subtítulo (color acento)", name: "subtitulo", widget: "string"}
+              - {label: "Descripción", name: "descripcion", widget: "text"}
+              - {label: "Email de destino", name: "email", widget: "string"}
+
+          - label: "CTA Final"
+            name: "cta"
+            widget: "object"
+            fields:
+              - {label: "Título línea 1", name: "titulo1", widget: "string"}
+              - {label: "Título línea 2 (acento)", name: "titulo2", widget: "string"}
+              - {label: "Subtítulo", name: "subtitulo", widget: "string"}
+
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            fields:
+              - {label: "Descripción", name: "descripcion", widget: "text"}
+              - {label: "Copyright", name: "copyright", widget: "string"}
